@@ -23,7 +23,7 @@ export default function WelcomeScreen({ navigation }) {
         <View style={styles.content}>
           <Text style={styles.title}>WELCOME TO</Text>
           <Text style={styles.title1}>PEACEPORT</Text>
-          <Text style={styles.subtitle}>Start your journey to inner tranquility</Text>
+          <Text style={styles.subtitle}>Start your journey to peace and inner tranquility</Text>
         </View>
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={[styles.button, styles.loginButton]} onPress={() => navigation.navigate('SignIn')}>
@@ -33,7 +33,7 @@ export default function WelcomeScreen({ navigation }) {
             <Text style={styles.buttonText}>Sign Up</Text>
           </TouchableOpacity>
           <TouchableOpacity style={[styles.button, styles.freeSelectionButton]} onPress={() => navigation.navigate('FreeSelection')}>
-            <Text style={styles.buttonText}>Limited Free Selection</Text>
+            <Text style={styles.buttonText}>Preview Access</Text>
           </TouchableOpacity>
         </View>
       </LinearGradient>
@@ -66,9 +66,10 @@ const styles = StyleSheet.create({
     color: '#f2fafa',
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 15,
     color: 'white',
     marginTop: 10,
+    textAlign: "center",
   },
   buttonContainer: {
     padding: 20,
