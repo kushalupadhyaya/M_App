@@ -1,4 +1,5 @@
 import React, { useState, useContext } from 'react';
+import * as SecureStore from 'expo-secure-store';
 import { View, TextInput, Button, StyleSheet, Text } from 'react-native';
 import { AuthContext } from '../AuthContext';
 import axios from 'axios';
@@ -15,6 +16,7 @@ export default function SignInScreen() {
       .post('http://192.168.0.15:3000/api/auth/login', { email: email, password: password })
       .then(function (response) {
         console.log(response.data);
+        SecureStore.setItemAsync('userToken', response.data.token);
         setIsAuthenticated(true);
         navigation.navigate('Main');
       })
