@@ -7,7 +7,7 @@ export default function WelcomeScreen({ navigation }) {
     <SafeAreaView style={styles.container}>
       <ImageBackground source={require('../assets/calm00.jpg')} style={styles.background}>
         <LinearGradient
-          colors={['rgba(4, 2, 33,0.5)', 'transparent']}
+          colors={['rgba(2, 1, 26, 0.8)', 'transparent']}
           style={styles.linearGradient}
         >
           <View style={styles.content}>
