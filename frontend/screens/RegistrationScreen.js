@@ -43,7 +43,7 @@ export default function RegistrationScreen({ navigation }) {
       })
       .then(function (response) {
         console.log(response.data);
-        navigation.navigate('SignIn');
+        navigation.navigate('Subscription');
       })
       .catch(function (error) {
         if (error.response) {
