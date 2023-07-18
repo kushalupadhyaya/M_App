@@ -5,6 +5,12 @@ const SoundtrackSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+
+  brief_description: {
+    type: String,
+    required: true
+  },
+
   description: {
     type: mongoose.Schema.Types.Mixed,  
     required: true

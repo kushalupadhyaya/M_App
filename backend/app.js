@@ -9,9 +9,6 @@ const User = require('./models/User');
 const verifyToken = require('./middleware');
 const Soundtrack = require('./models/Soundtrack'); 
 
-
-
-
 process.on('unhandledRejection', (reason, p) => {
   console.error('Unhandled Rejection at:', p, 'reason:', reason);
 });
@@ -110,7 +107,6 @@ app.post('/api/auth/login', async (req, res) => {
 });
 
 //soundtrack
-//soundtrack
 app.get('/api/soundtracks', async (req, res) => {
   try {
     const soundtracks = await Soundtrack.find({});
@@ -128,7 +124,7 @@ app.get('/api/soundtracks', async (req, res) => {
             const html = converter.convert();
             console.log('Converted HTML:', html); // Log the converted HTML
             // Replace the description with the new HTML
-            soundtrack.set('description', JSON.stringify(html)); // Stringify HTML as your model requires a string
+            soundtrack.set('description', html); 
             return soundtrack.save(); // Add this line
           }
         } catch (e) {
