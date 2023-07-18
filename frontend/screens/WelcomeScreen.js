@@ -7,15 +7,15 @@ export default function WelcomeScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <Video 
-        source={require('../assets/backgroundVideo.mp4')} 
-        style={StyleSheet.absoluteFill}
-        shouldPlay
-        isLooping
-        resizeMode="cover"
-        isMuted={true}
-        rate={1}
-
+          source={{ uri: 'https://res.cloudinary.com/djmeitgwd/video/upload/v1689607669/pexels-ayse-gocum-14863057_1080p_oyuqor.mp4' }} 
+          style={StyleSheet.absoluteFill}
+          shouldPlay
+          isLooping
+          resizeMode="cover"
+          isMuted={true}
+          rate={1}
       />
+
       <LinearGradient
         colors={['rgba(97, 242, 235, 0.4)', 'transparent']}
         style={styles.linearGradient}

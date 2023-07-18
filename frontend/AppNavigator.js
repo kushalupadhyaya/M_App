@@ -16,6 +16,8 @@ import FitnessAndSportScreen from './screens/FitnessAndSportScreen';
 import FreeSelectionScreen from './screens/FreeSelectionScreen';
 import MainPageScreen from './screens/MainPageScreen';
 import SubscriptionScreen from './screens/SubscriptionScreen';
+import FreeScreen from './screens/FreeScreen';
+
 
 
 const AuthStack = createNativeStackNavigator();
@@ -43,6 +45,7 @@ const AppNavigator = () => {
           <AuthStack.Screen name="SignIn" component={SignInScreen} />
           <AuthStack.Screen name="Registration" component={RegistrationScreen} />
           <AppStack.Screen name="FreeSelection" component={FreeSelectionScreen} />
+          <AppStack.Screen name="FreeScreen" component={FreeScreen} />
           <AppStack.Screen name="Subscription" component={SubscriptionScreen} />
         </AuthStack.Navigator>
       )}
