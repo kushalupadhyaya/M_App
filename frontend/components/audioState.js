@@ -2,16 +2,27 @@ import { Audio } from 'expo-av';
 
 let audio = null;
 
-export async function getAudio() {
-  if (!audio) {
-    audio = new Audio.Sound();
+export async function playSound(url) {
+  if (audio) {
+    console.log('Stopping current sound');
+    await audio.stopAsync(); // stop current sound
+    await audio.unloadAsync(); // unload it
+  }
+
+  console.log('Loading new sound');
+  audio = new Audio.Sound();
+  try {
+    await audio.loadAsync({ uri: url });
+    await audio.playAsync();
+  } catch (err) {
+    console.error('Failed to load sound', err);
   }
   return audio;
 }
 
-export function resetAudio() {
+export async function stopSound() {
   if (audio) {
-    audio.unloadAsync();
+    await audio.stopAsync();
     audio = null;
   }
 }

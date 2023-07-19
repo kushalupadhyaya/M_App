@@ -4,79 +4,63 @@ import { Audio } from 'expo-av';
 import { MaterialIcons } from '@expo/vector-icons';
 import Slider from '@react-native-community/slider';
 
+function formatTime(millis = 0) {
+  const totalSeconds = Math.floor(millis / 1000);
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+
+  const paddedMinutes = String(minutes).padStart(2, '0');
+  const paddedSeconds = String(seconds).padStart(2, '0');
+
+  return `${paddedMinutes}:${paddedSeconds}`;
+}
+
 export default function FreeScreen({ route, navigation }) {
   const { meditation } = route.params;
-  const [sound, setSound] = useState();
+  const [sound, setSound] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
   const [position, setPosition] = useState(0);
 
-  async function loadSound() {
-    console.log('Loading Sound');
-    console.log('Soundtrack URL: ', meditation.url);
-
+  async function loadAudio() {
     await Audio.setAudioModeAsync({
       allowsRecordingIOS: false,
-      staysActiveInBackground: true,
-      playsInSilentModeIOS: true,
+      staysActiveInBackground: true, // This option is important
       shouldDuckAndroid: true,
-      playThroughEarpieceAndroid: false,
+      playThroughEarpieceAndroid: false
     });
 
     const { sound } = await Audio.Sound.createAsync(
-      {uri: meditation.url},
-      {
-        shouldPlay: false, // Here the sound won't start playing automatically.
-        rate: 1.0,
-        shouldCorrectPitch: true,
-        volume: 1.0,
-        isMuted: false,
-        isLooping: false // Here we disable the looping.
-      }
+      { uri: meditation.url },
+      { shouldPlay: isPlaying, isLooping: false },
+      updateState
     );
-
     setSound(sound);
   }
 
-  async function playSound() {
-    console.log('Playing Sound');
-    if (sound) {
-      await sound.playAsync(); 
-      setIsPlaying(true);
-    }
+  async function updateState(newState) {
+    setDuration(newState.durationMillis);
+    setPosition(newState.positionMillis);
+    setIsPlaying(newState.isPlaying);
   }
 
-  async function pauseSound() {
-    console.log('Pausing Sound');
-    if (sound) {
-      await sound.pauseAsync();
-      setIsPlaying(false);
-    }
+  async function handlePlayPause() {
+    isPlaying ? await sound.pauseAsync() : await sound.playAsync();
   }
 
   async function handleSliderValueChange(value) {
-    if (sound) {
-      await sound.setPositionAsync(value);
-    }
+    await sound.setPositionAsync(value);
   }
 
   useEffect(() => {
-    loadSound();
+    loadAudio();
     return sound
       ? () => {
           console.log('Unloading Sound');
-          sound.unloadAsync(); }
+          sound.unloadAsync();
+        }
       : undefined;
   }, []);
-
-  useEffect(() => {
-    if (sound) {
-      sound.setOnPlaybackStatusUpdate(status => {
-        setDuration(status.durationMillis);
-        setPosition(status.positionMillis);
-      });
-    }
-  }, [sound]);
 
   return (
     <View style={styles.container}>
@@ -85,24 +69,29 @@ export default function FreeScreen({ route, navigation }) {
         style={styles.image}
       />
       <Text style={styles.title}>{meditation.name}</Text>
-
-      <Slider
-        style={{width: '80%', height: 40}}
-        minimumValue={0}
-        maximumValue={duration}
-        value={position}
-        onValueChange={handleSliderValueChange}
-        minimumTrackTintColor="#FFFFFF"
-        maximumTrackTintColor="#000000"
-      />
-
-      <TouchableOpacity onPress={isPlaying ? pauseSound : playSound}>
-        <MaterialIcons 
-          name={isPlaying ? "pause" : "play-arrow"} 
-          size={44} 
-          color="black" 
+      
+      <View style={styles.playerContainer}>
+        <Slider
+          style={{ width: '80%', height: 40 }}
+          minimumValue={0}
+          maximumValue={duration}
+          value={position}
+          onValueChange={handleSliderValueChange}
+          minimumTrackTintColor="#1EB1FC"
+          maximumTrackTintColor="#000000"
         />
-      </TouchableOpacity>
+        <View style={styles.timerContainer}>
+          <Text>{formatTime(position)}</Text>
+          <Text>{formatTime(duration)}</Text>
+        </View>
+        <TouchableOpacity style={styles.playButton} onPress={handlePlayPause}>
+          <MaterialIcons 
+            name={isPlaying ? "pause" : "play-arrow"} 
+            size={44} 
+            color="black" 
+          />
+        </TouchableOpacity>
+      </View>
 
       <Text style={styles.description}>{meditation.brief_description}</Text>
     </View>
@@ -128,5 +117,29 @@ const styles = StyleSheet.create({
     fontSize: 16,
     paddingHorizontal: 10,
     textAlign: 'center',
+  },
+  playerContainer: {
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 10,
+  },
+  trackName: {
+    color: '#000',
+    fontSize: 16,
+    marginBottom: 10,
+  },
+  playButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#1ab0a3',
+    borderRadius: 50,
+    width: 60,
+    height: 60,
+  },
+  timerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '80%',
   },
 });
