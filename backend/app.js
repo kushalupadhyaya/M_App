@@ -119,10 +119,10 @@ app.get('/api/soundtracks', async (req, res) => {
           // Try parsing the JSON string into an object
           const descriptionObj = JSON.parse(soundtrack.description);
           if (descriptionObj.ops) {
-            console.log('Description ops:', descriptionObj.ops); // Log the ops
+            // console.log('Description ops:', descriptionObj.ops); 
             const converter = new QuillDeltaToHtmlConverter(descriptionObj.ops, {});
             const html = converter.convert();
-            console.log('Converted HTML:', html); // Log the converted HTML
+            // console.log('Converted HTML:', html); 
             // Replace the description with the new HTML
             soundtrack.set('description', html); 
             return soundtrack.save(); // Add this line

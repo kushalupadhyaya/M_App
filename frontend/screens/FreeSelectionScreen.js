@@ -15,7 +15,7 @@ const FreeSelectionScreen = ({ navigation }) => {
         return response.json();
       })
       .then(data => {
-        console.log('Data:', data);
+        //console.log('Data:', data);
         if(!Array.isArray(data)) {
           data = [data];
         }
@@ -45,7 +45,7 @@ const FreeSelectionScreen = ({ navigation }) => {
               title="Listen"
               buttonStyle={styles.button}
               titleStyle={styles.buttonTitle}
-              onPress={() => navigation.navigate('MeditationScreen', { meditation })}
+              onPress={() => navigation.navigate('FreeScreen', { meditation })}
             />
           </Card>
         )

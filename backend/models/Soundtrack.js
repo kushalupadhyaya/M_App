@@ -19,7 +19,7 @@ const SoundtrackSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
-  url: {
+  url: { //url for sound
     type: String,
     required: true
   },
