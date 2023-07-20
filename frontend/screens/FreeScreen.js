@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import { Audio } from 'expo-av';
 import { MaterialIcons } from '@expo/vector-icons';
 import Slider from '@react-native-community/slider';
+import { loadAudio, unloadAudio, getAudioStatus, pauseSound, playSound } from '../components/audioState';
 
 function formatTime(millis = 0) {
   const totalSeconds = Math.floor(millis / 1000);
@@ -17,50 +17,51 @@ function formatTime(millis = 0) {
 
 export default function FreeScreen({ route, navigation }) {
   const { meditation } = route.params;
-  const [sound, setSound] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
   const [position, setPosition] = useState(0);
 
-  async function loadAudio() {
-    await Audio.setAudioModeAsync({
-      allowsRecordingIOS: false,
-      staysActiveInBackground: true, // This option is important
-      shouldDuckAndroid: true,
-      playThroughEarpieceAndroid: false
-    });
-
-    const { sound } = await Audio.Sound.createAsync(
-      { uri: meditation.url },
-      { shouldPlay: isPlaying, isLooping: false },
-      updateState
-    );
-    setSound(sound);
-  }
-
-  async function updateState(newState) {
-    setDuration(newState.durationMillis);
-    setPosition(newState.positionMillis);
-    setIsPlaying(newState.isPlaying);
-  }
+  useEffect(() => {
+    if (meditation.url) {
+      loadAudio(meditation.url).then(() => {
+        const interval = setInterval(async () => {
+          const status = await getAudioStatus();
+          setIsPlaying(status.isPlaying);
+          setDuration(status.durationMillis);
+          setPosition(status.positionMillis);
+        }, 1000);
+  
+        return () => clearInterval(interval);
+      });
+    }
+  
+    return unloadAudio;
+  }, [meditation.url]);
+  
 
   async function handlePlayPause() {
-    isPlaying ? await sound.pauseAsync() : await sound.playAsync();
+    const status = await getAudioStatus();
+    if (status.isPlaying) {
+      await pauseSound();
+    } else {
+      await playSound(meditation.url);
+    }
   }
 
   async function handleSliderValueChange(value) {
-    await sound.setPositionAsync(value);
+    await unloadAudio();
+    await loadAudio(meditation.url, value);
   }
 
   useEffect(() => {
     loadAudio();
-    return sound
-      ? () => {
-          console.log('Unloading Sound');
-          sound.unloadAsync();
-        }
-      : undefined;
+    return () => {
+      if (isPlaying) {
+        pauseSound();
+      }
+    };
   }, []);
+
 
   return (
     <View style={styles.container}>
@@ -76,7 +77,7 @@ export default function FreeScreen({ route, navigation }) {
           minimumValue={0}
           maximumValue={duration}
           value={position}
-          onValueChange={handleSliderValueChange}
+          onSlidingComplete={handleSliderValueChange}
           minimumTrackTintColor="#1EB1FC"
           maximumTrackTintColor="#000000"
         />
