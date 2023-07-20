@@ -18,15 +18,19 @@ export async function playSound(uri) {
     } catch (error) {
       console.error(error);
     }
-  } else {
+  }
+
+  return soundObject;
+}
+
+export async function resumeSound() {
+  if (soundObject) {
     try {
       await soundObject.playAsync();
     } catch (error) {
       console.error(error);
     }
   }
-
-  return soundObject;
 }
 
 export async function pauseSound() {
@@ -41,7 +45,7 @@ export async function pauseSound() {
 
 export async function loadAudio(uri, position = 0) {
   if (!uri) return;
-  
+
   if (!soundObject || lastPlayingUri !== uri) {
     soundObject = new Audio.Sound();
     try {
@@ -59,6 +63,15 @@ export async function loadAudio(uri, position = 0) {
   return soundObject;
 }
 
+export async function setAudioPosition(positionMillis) {
+  if (soundObject) {
+    try {
+      await soundObject.setPositionAsync(positionMillis);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+}
 
 export async function getAudioStatus() {
   if (soundObject) {

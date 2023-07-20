@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import Slider from '@react-native-community/slider';
-import { loadAudio, unloadAudio, getAudioStatus, pauseSound, playSound } from '../components/audioState';
+import { loadAudio, unloadAudio, getAudioStatus, pauseSound, playSound, setAudioPosition, resumeSound } from '../components/audioState';
 
 function formatTime(millis = 0) {
   const totalSeconds = Math.floor(millis / 1000);
@@ -44,13 +44,12 @@ export default function FreeScreen({ route, navigation }) {
     if (status.isPlaying) {
       await pauseSound();
     } else {
-      await playSound(meditation.url);
+      await resumeSound();
     }
   }
 
   async function handleSliderValueChange(value) {
-    await unloadAudio();
-    await loadAudio(meditation.url, value);
+    await setAudioPosition(value);
   }
 
   useEffect(() => {
