@@ -15,18 +15,18 @@ const FreeSelectionScreen = ({ navigation }) => {
         return response.json();
       })
       .then(data => {
-        //console.log('Data:', data);
         if(!Array.isArray(data)) {
           data = [data];
         }
         const freeMeditations = data.filter(meditation => meditation.free === true);
         setMeditations(freeMeditations);
+
       })
       .catch(error => console.error('Error:', error));
   }, []);
 
   return (
-    <ScrollView contentContainerStyle={{ paddingBottom: 50 }}>
+    <ScrollView contentContainerStyle={styles.container}>
       <Text h2 style={styles.title}>Free Selection</Text>
       {meditations.map((meditation, index) => {
         return (
@@ -56,13 +56,17 @@ const FreeSelectionScreen = ({ navigation }) => {
 
 
 const styles = StyleSheet.create({
+  container: {
+    paddingBottom: 50,
+    backgroundColor: '#f2f2f2', 
+  },
   title: {
     textAlign: 'center',
     marginTop: 20,
     marginBottom: 20,
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#5A9',
+    color: '#344955',
   },
   card: {
     marginBottom: 20,
@@ -77,6 +81,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.22,
     shadowRadius: 2.22,
     elevation: 3,
+    backgroundColor: '#f2f2f2',
   },
   cardHeader: {
     flexDirection: 'row',
@@ -97,19 +102,21 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#344955',
   },
   cardDescription: {
     fontSize: 14,
-    color: '#333',
+    color: '#4a6572',
   },
   button: {
-    backgroundColor: '#5A9',
+    backgroundColor: '#b3c4cb',
     borderRadius: 5,
     marginTop: 10,
+    elevation: 0,  // Add this
   },
   buttonTitle: {
     fontWeight: 'bold',
+    color: '#344955',
   },
 });
 

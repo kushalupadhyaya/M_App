@@ -46,22 +46,29 @@ export async function pauseSound() {
 export async function loadAudio(uri, position = 0) {
   if (!uri) return;
 
-  if (!soundObject || lastPlayingUri !== uri) {
-    soundObject = new Audio.Sound();
-    try {
-      await soundObject.loadAsync(
-        { uri },
-        { shouldPlay: false, positionMillis: position },
-        false
-      );
-      lastPlayingUri = uri;
-    } catch (error) {
-      console.error(error);
-    }
+  if (soundObject) {
+    await soundObject.unloadAsync();
   }
 
-  return soundObject;
+  soundObject = new Audio.Sound();
+
+  try {
+    await soundObject.loadAsync(
+      { uri },
+      { shouldPlay: false, positionMillis: position },
+      false
+    );
+    lastPlayingUri = uri;
+    return Promise.resolve();
+  } catch (error) {
+    console.error(error);
+    return Promise.reject(error);
+  }
 }
+
+
+
+
 
 export async function setAudioPosition(positionMillis) {
   if (soundObject) {

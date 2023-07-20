@@ -7,7 +7,7 @@ export default function WelcomeScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <Video 
-          source={{ uri: 'https://res.cloudinary.com/djmeitgwd/video/upload/v1689607669/pexels-ayse-gocum-14863057_1080p_oyuqor.mp4' }} 
+          source={{ uri: 'https://res.cloudinary.com/djmeitgwd/video/upload/v1689604466/backgroundVideo_nfghph.mp4' }} 
           style={StyleSheet.absoluteFill}
           shouldPlay
           isLooping
@@ -89,13 +89,13 @@ const styles = StyleSheet.create({
     shadowRadius: 2.62,
   },
   loginButton: {
-    backgroundColor: 'rgba(32, 84, 115, 0.3)',
+    backgroundColor: 'rgba(165, 213, 232, 0.5)',
   },
   signupButton: {
-    backgroundColor: 'rgba(18, 59, 99, 0.4)',
+    backgroundColor: 'rgba(133, 197, 222, 0.6)',
   },
   freeSelectionButton: {
-    backgroundColor: 'rgba(242, 7, 27, 0.7)',
+    backgroundColor: 'black',
   },
   buttonText: {
     color: '#fff',
