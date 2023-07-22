@@ -38,15 +38,17 @@ const AppNavigator = () => {
           <AppStack.Screen name="WorkBusiness" component={WorkBusinessScreen} />
           <AppStack.Screen name="Productivity" component={ProductivityScreen} />
           <AppStack.Screen name="FitnessAndSport" component={FitnessAndSportScreen} />
+          <AppStack.Screen name="Subscription" component={SubscriptionScreen} />
+          <AppStack.Screen name="FreeSelection" component={FreeSelectionScreen} />
         </AppStack.Navigator>
       ) : (
         <AuthStack.Navigator initialRouteName="Welcome">
           <AuthStack.Screen name="Welcome" component={WelcomeScreen} options={{ headerShown: false }} />
-          <AuthStack.Screen name="SignIn" component={SignInScreen} />
-          <AuthStack.Screen name="Registration" component={RegistrationScreen} />
-          <AppStack.Screen name="FreeSelection" component={FreeSelectionScreen} />
-          <AppStack.Screen name="FreeScreen" component={FreeScreen} />
-          <AppStack.Screen name="Subscription" component={SubscriptionScreen} />
+          <AuthStack.Screen name="SignIn" component={SignInScreen} options={{ headerShown: false }} />
+          <AuthStack.Screen name="Registration" component={RegistrationScreen} options={{ headerShown: false }} />
+          <AppStack.Screen name="FreeSelection" component={FreeSelectionScreen} options={{ headerShown: false }} />
+          <AppStack.Screen name="FreeScreen" component={FreeScreen} options={{ headerShown: false }} />
+          <AppStack.Screen name="Subscription" component={SubscriptionScreen} options={{ headerShown: false }} />
         </AuthStack.Navigator>
       )}
     </NavigationContainer>

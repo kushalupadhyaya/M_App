@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import * as SecureStore from 'expo-secure-store';
-import { View, TextInput, Button, StyleSheet, Text } from 'react-native';
+import { View, TextInput, TouchableOpacity, StyleSheet, Text, ScrollView } from 'react-native';
 import { AuthContext } from '../AuthContext';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
@@ -13,7 +13,7 @@ export default function SignInScreen() {
 
   const loginUser = () => {
     axios
-      .post('http://192.168.0.15:3000/api/auth/login', { email: email, password: password })
+      .post('http://192.168.0.4:3000/api/auth/login', { email: email, password: password })
       .then(function (response) {
         console.log(response.data);
         SecureStore.setItemAsync('userToken', response.data.token);
@@ -21,12 +21,12 @@ export default function SignInScreen() {
         navigation.navigate('Main');
       })
       .catch(function (error) {
-        console.log(error);
+        console.log(error); // This is where the error message will be logged
       });
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.contentContainer}>
       <Text style={styles.title}>Login</Text>
       <TextInput
         style={styles.input}
@@ -41,30 +41,50 @@ export default function SignInScreen() {
         onChangeText={setPassword}
         secureTextEntry
       />
-      <Button title="Login" onPress={loginUser} />
-    </View>
+      <TouchableOpacity style={styles.loginButton} onPress={loginUser}>
+        <Text style={styles.buttonText}>Login</Text>
+      </TouchableOpacity>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  contentContainer: {
+    flexGrow: 1,
+    paddingHorizontal: 20,
+    alignItems: 'center',
     justifyContent: 'center',
-    padding: 20,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#f2f2f2',
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 20,
+    marginVertical: 10,
     textAlign: 'center',
+    color: '#344955',
   },
   input: {
-    height: 40,
-    borderColor: 'gray',
+    height: 50,
+    borderColor: '#ddd',
     borderWidth: 1,
+    marginBottom: 20,
+    paddingLeft: 15,
+    borderRadius: 10,
+    fontSize: 16,
+    width: '100%',
+  },
+  loginButton: {
+    height: 40,
     marginBottom: 10,
-    paddingLeft: 10,
-    borderRadius: 5,
+    backgroundColor: 'rgba(176, 203, 214, 0.9)',
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    textAlign: 'center',
   },
 });

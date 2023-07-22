@@ -17,13 +17,13 @@ export default function WelcomeScreen({ navigation }) {
       />
 
       <LinearGradient
-        colors={['rgba(97, 242, 235, 0.4)', 'transparent']}
+        colors={['rgba(255, 255, 255, 0.3)', 'transparent']}
         style={styles.linearGradient}
       >
         <View style={styles.content}>
           <Text style={styles.title}>WELCOME TO</Text>
           <Text style={styles.title1}>PEACEPORT</Text>
-          <Text style={styles.subtitle}>Start your journey to mental clarity and inner tranquility</Text>
+          <Text style={styles.subtitle}>Start your journey to mental focus and inner tranquility</Text>
         </View>
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={[styles.button, styles.loginButton]} onPress={() => navigation.navigate('SignIn')}>
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
   },
   title1: {
     fontSize: 42,
-    color: 'rgba(235, 255, 242, 0.55)',
+    color: 'white',
   },
   subtitle: {
     fontSize: 15,
@@ -90,10 +90,10 @@ const styles = StyleSheet.create({
  
   },
   loginButton: {
-    backgroundColor: 'rgba(235, 255, 242, 0.35)',
+    backgroundColor: 'rgba(220, 237, 242, 0.25)',
   },
   signupButton: {
-    backgroundColor: 'rgba(179, 196, 203, 0.5)',
+    backgroundColor: 'rgba(220, 237, 242, 0.25)',
   },
   freeSelectionButton: {
     backgroundColor: 'rgba(222, 52, 47, 0.3)',
@@ -101,6 +101,6 @@ const styles = StyleSheet.create({
   buttonText: {
     color: 'white',
     fontSize: 14,
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
   },
 });

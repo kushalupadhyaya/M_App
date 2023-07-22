@@ -1,34 +1,38 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions, ImageBackground } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
 const PlanCard = ({ plan, price, onSelect }) => (
-  <View style={styles.card}>
-    <LinearGradient
-      colors={['#2056ba', '#6ab9eb']}
-      start={[0, 0]}
-      end={[1, 0]}
-      style={styles.gradient}
-    >
+  <LinearGradient
+    colors={['#6b9dc2', '#d0cbf2']} // softer colors for the card
+    start={[0, 0]}
+    end={[1, 0]}
+    style={styles.card}
+  >
+    <View style={styles.cardContent}>
       <Text style={styles.plan}>{plan}</Text>
       <Text style={styles.price}>{price}</Text>
       <TouchableOpacity style={styles.button} onPress={onSelect}>
         <Text style={styles.buttonText}>Select Plan</Text>
       </TouchableOpacity>
-    </LinearGradient>
-  </View>
+    </View>
+  </LinearGradient>
 );
 
 export default function SubscriptionScreen({ navigation }) {
   const plans = [
-    { plan: 'Monthly Plan', price: '$4.99/month' },
+    { plan: 'Monthly Plan', price: '$6.99/month' },
     { plan: 'Yearly Plan', price: '$14.99/year' },
+    { plan: 'Corporate Plan', price: 'From $799.99/year' },
   ];
 
   return (
-    <ImageBackground source={require('../assets/calm00.jpg')} style={styles.background}>
-      <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.title}>Choose Your Plan</Text>
+    <LinearGradient 
+      colors={['#FFFFFF', '#e1e7ed']} 
+      style={styles.container}
+    >
+      <Text style={styles.title}>Choose Your Plan</Text>
+      <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
         {plans.map((plan, index) => (
           <PlanCard
             key={index}
@@ -38,41 +42,41 @@ export default function SubscriptionScreen({ navigation }) {
           />
         ))}
       </ScrollView>
-    </ImageBackground>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
-  background: {
-    flex: 1,
-  },
   container: {
-    alignItems: 'center',
+    flex: 1,
     padding: 20,
     paddingTop: 50,
   },
+  scrollContainer: {
+    alignItems: 'center',
+  },
   title: {
-    fontSize: 30,
-    fontWeight: '700',
-    color: 'white',
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#0a425c',
     marginBottom: 20,
     textAlign: 'center',
   },
   card: {
     width: Dimensions.get('window').width - 40,
-    borderRadius: 20,
+    borderRadius: 10,
     overflow: 'hidden',
     marginBottom: 20,
-    elevation: 10,
+    elevation: 3,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    shadowOpacity: 0.22,
+    shadowRadius: 2.22,
   },
-  gradient: {
+  cardContent: {
     padding: 20,
     alignItems: 'center',
     justifyContent: 'center',
@@ -80,12 +84,12 @@ const styles = StyleSheet.create({
   plan: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#fff',
+    color: 'white', // darker text for better readability on lighter card
     marginTop: 15,
   },
   price: {
     fontSize: 20,
-    color: '#fff',
+    color: 'white', // darker text for better readability on lighter card
     marginBottom: 15,
     marginTop: 15,
   },
@@ -93,11 +97,11 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 35,
     borderRadius: 25,
-    marginBottom: 15,
-    backgroundColor: '#fff',
+    marginTop: 15,
+    backgroundColor: 'rgba(176, 203, 214, 0.8)',
   },
   buttonText: {
-    color: '#018f77',
+    color: '#fff',
     fontSize: 18,
     fontWeight: '700',
   },

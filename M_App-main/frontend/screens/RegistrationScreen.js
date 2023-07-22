@@ -33,7 +33,7 @@ export default function RegistrationScreen({ navigation }) {
     }
 
     axios
-      .post('http://192.168.0.15:3000/api/auth/register', {
+      .post('http://192.168.0.4:3000/api/auth/register', {
         name: fullName,
         location: { country: country, city: city },
         dob: dob,
@@ -50,10 +50,19 @@ export default function RegistrationScreen({ navigation }) {
           console.log(error.response.data);
           console.log(error.response.status);
           console.log(error.response.headers);
+
+
+    
           // If the server responds with status code 409, show an alert that the email is already in use.
-          if (error.response.status === 400) {
+          if (error.response.status === 409) {
             alert('Email is already in use');
           }
+    
+          // If the server responds with status code 400, show an alert that some fields are missing or not correct.
+          if (error.response.status === 400) {
+            alert(`Error: ${error.response.data.error}`);
+          }
+          
         } else if (error.request) {
           console.log(error.request);
         } else {
@@ -61,10 +70,11 @@ export default function RegistrationScreen({ navigation }) {
         }
         console.log(error.config);
       });
+    
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView contentContainerStyle={styles.contentContainer}>
       <Text style={styles.title}>Register</Text>
       <TextInput
         style={styles.input}
@@ -84,7 +94,6 @@ export default function RegistrationScreen({ navigation }) {
           ))}
         </Picker>
       </View>
-
       <TextInput
         style={styles.input}
         placeholder="City"
@@ -133,22 +142,29 @@ export default function RegistrationScreen({ navigation }) {
         <Text style={styles.buttonText}>Register</Text>
       </TouchableOpacity>
     </ScrollView>
-  );
-}
+  )};
+
 
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: '#f5f5f5',
+    alignItems: 'center',
+    backgroundColor: '#f2f2f2',
+  },
+  contentContainer: {
+    flexGrow: 1,
+    paddingHorizontal: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#f2f2f2',
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 20,
+    marginVertical: 10,
     textAlign: 'center',
-    color: '#333',
+    color: '#344955',
   },
   input: {
     height: 50,
@@ -158,6 +174,7 @@ const styles = StyleSheet.create({
     paddingLeft: 15,
     borderRadius: 10,
     fontSize: 16,
+    width: '100%',
   },
   pickerContainer: {
     marginBottom: 20,
@@ -165,29 +182,33 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ddd',
     overflow: 'hidden',
+    width: '100%',
   },
   picker: {
     height: 50,
     fontSize: 16,
+    width: '100%',
   },
   datePickerButton: {
     height: 40,
     marginBottom: 10,
-    backgroundColor: '#2196F3',
-    borderRadius: 5,
+    backgroundColor: 'rgba(176, 203, 214, 0.9)',
+    borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
+    width: '100%',
   },
   registerButton: {
     height: 40,
     marginBottom: 10,
-    backgroundColor: '#2196F3',
-    borderRadius: 5,
+    backgroundColor: 'rgba(176, 203, 214, 0.9)',
+    borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
+    width: '100%',
   },
   buttonText: {
-    color: '#fff', // Change this to whatever color you want
+    color: 'white',
     fontSize: 16,
     textAlign: 'center',
   },

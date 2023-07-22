@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const authRoutes = require('./routes/auth');
 const User = require('./models/User'); 
@@ -46,66 +46,6 @@ app.get('/protected', verifyToken, (req, res) => {
   res.send('This is a protected route');
 });
 
-app.post('/api/auth/register', async (req, res) => {
-  const { email, password } = req.body;
-
-  try {
-    let user = await User.findOne({ email });
-
-    if (user) {
-      return res.status(400).json({
-        error: 'Email already in use'
-      });
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    user = new User({
-      email,
-      password: hashedPassword
-    });
-
-    await user.save();
-
-    const token = jwt.sign(
-      { userId: user._id },
-      process.env.JWT_URI,
-      { expiresIn: '1h' }
-    );
-
-    res.status(201).json({ token });
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Server error');
-  }
-});
-
-app.post('/api/auth/login', async (req, res) => {
-  const { email, password } = req.body;
-
-  try {
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(400).json({ error: 'Invalid email or password' });
-    }
-
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(400).json({ error: 'Invalid email or password' });
-    }
-
-    const token = jwt.sign(
-      { userId: user._id },
-      process.env.JWT_SECRET,
-      { expiresIn: '1h' }
-    );
-
-    res.json({ token });
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Server error');
-  }
-});
 
 app.get('/api/auth/me', verifyToken, async (req, res) => {
   try {
