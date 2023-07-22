@@ -20,9 +20,10 @@ process.on('uncaughtException', (err, origin) => {
 // Create Express server
 const app = express();
 
+app.use(cors({ origin: '*' }));
 app.use(express.json());
 app.use('/api/auth', authRoutes);
-app.use(cors());
+
 
 // Connection to MongoDB
 mongoose.connect(process.env.MONGO_URI, {
@@ -100,6 +101,29 @@ app.post('/api/auth/login', async (req, res) => {
     );
 
     res.json({ token });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server error');
+  }
+});
+
+app.get('/api/auth/me', verifyToken, async (req, res) => {
+  try {
+    // Find user with _id provided in token (it's available in req.user after verifyToken middleware)
+    const user = await User.findById(req.user.userId);
+    if (!user) {
+      return res.status(400).json({ error: 'User not found' });
+    }
+
+    // Return user data excluding password
+    res.json({
+      name: user.name,
+      location: user.location,
+      dob: user.dob,
+      gender: user.gender,
+      email: user.email,
+      _id: user._id
+    });
   } catch (err) {
     console.error(err);
     res.status(500).send('Server error');
