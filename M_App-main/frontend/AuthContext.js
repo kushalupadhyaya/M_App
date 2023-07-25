@@ -1,20 +1,34 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect, useContext } from 'react';
 import * as SecureStore from 'expo-secure-store';
-import LoadingScreen from './screens//LoadingScreen';  // the exact path may vary depending on your project structure
+import LoadingScreen from './screens/LoadingScreen';
+import axios from 'axios';
 
 
-export const AuthContext = createContext();
+export const AuthContext = createContext({
+  user: null,
+  setUser: () => {},
+  clearUser: () => {},
+  isAuthenticated: false,
+  setIsAuthenticated: () => {},
+  logout: () => {},
+});
 
 export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);  // new state for loading
+  const [isLoading, setIsLoading] = useState(true); 
 
-  const logout = () => {
-    SecureStore.deleteItemAsync('userToken');
+  const logout = async () => {
+    await SecureStore.deleteItemAsync('userToken');
+    setUser(null);
     setIsAuthenticated(false);
   };
 
-  const bootstrapAsync = async () => {
+  const clearUser = () => {
+    setUser(null);
+  };
+
+const bootstrapAsync = async () => {
     let userToken;
 
     try {
@@ -24,21 +38,38 @@ export const AuthProvider = ({ children }) => {
     }
 
     setIsAuthenticated(userToken != null);
-    setIsLoading(false);  // set loading to false after checking the token
+    setIsLoading(false);
+
+    if (userToken) {
+      axios
+        .get('http://192.168.0.4:3000/api/auth/me', {
+          headers: { Authorization: `Bearer ${userToken}` },
+        })
+        .then((response) => {
+          setUser(response.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   };
+
 
   useEffect(() => {
     bootstrapAsync();
   }, []);
 
   if (isLoading) {
-    // Render loading screen
-    return <LoadingScreen />;  // You need to create a LoadingScreen component
+    return <LoadingScreen />;
   }
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated, logout }}>
+    <AuthContext.Provider value={{ user, setUser, clearUser, isAuthenticated, setIsAuthenticated, logout }}>
       {children}
     </AuthContext.Provider>
   );
+};
+
+export const useAuth = () => {
+  return useContext(AuthContext);
 };

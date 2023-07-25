@@ -1,7 +1,7 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { AuthContext } from './AuthContext';
+import { useAuth } from './AuthContext';
 
 import WelcomeScreen from './screens/WelcomeScreen';
 import RegistrationScreen from './screens/RegistrationScreen';
@@ -18,14 +18,12 @@ import MainPageScreen from './screens/MainPageScreen';
 import SubscriptionScreen from './screens/SubscriptionScreen';
 import FreeScreen from './screens/FreeScreen';
 
-
-
 const AuthStack = createNativeStackNavigator();
 const AppStack = createNativeStackNavigator();
 
 const AppNavigator = () => {
-  const { isAuthenticated } = useContext(AuthContext);
-
+  const { isAuthenticated } = useAuth();
+  
   return (
     <NavigationContainer>
       {isAuthenticated ? (

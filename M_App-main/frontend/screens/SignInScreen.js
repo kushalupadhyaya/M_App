@@ -5,11 +5,13 @@ import { AuthContext } from '../AuthContext';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 
+
 export default function SignInScreen() {
-  const { setIsAuthenticated } = useContext(AuthContext);
+  const { setIsAuthenticated, setUser } = useContext(AuthContext);
   const navigation = useNavigation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
 
   const loginUser = () => {
     axios
@@ -17,6 +19,7 @@ export default function SignInScreen() {
       .then(function (response) {
         console.log(response.data);
         SecureStore.setItemAsync('userToken', response.data.token);
+        setUser({ ...response.data.user, token: response.data.token }); // Save user data along with the token to context
         setIsAuthenticated(true);
         navigation.navigate('Main');
       })
@@ -24,6 +27,7 @@ export default function SignInScreen() {
         console.log(error); // This is where the error message will be logged
       });
   };
+  
 
   return (
     <ScrollView contentContainerStyle={styles.contentContainer}>
