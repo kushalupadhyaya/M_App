@@ -46,30 +46,6 @@ app.get('/protected', verifyToken, (req, res) => {
   res.send('This is a protected route');
 });
 
-
-app.get('/api/auth/me', verifyToken, async (req, res) => {
-  try {
-    // Find user with _id provided in token (it's available in req.user after verifyToken middleware)
-    const user = await User.findById(req.user.userId);
-    if (!user) {
-      return res.status(400).json({ error: 'User not found' });
-    }
-
-    // Return user data excluding password
-    res.json({
-      name: user.name,
-      location: user.location,
-      dob: user.dob,
-      gender: user.gender,
-      email: user.email,
-      _id: user._id
-    });
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Server error');
-  }
-});
-
 //soundtrack
 app.get('/api/soundtracks', async (req, res) => {
   try {
