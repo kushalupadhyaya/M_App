@@ -7,12 +7,17 @@ const User = require('../models/User');
 const router = express.Router();
 const verifyToken = require('../middleware');
 
-const saltRounds = 10;  // Define the salt rounds for hashing the password.
-
 // Register
 router.post('/register', async (req, res) => {
   try {
-    const user = new User(req.body);
+    const { name, email, password } = req.body;
+
+    // Ensure all required fields are provided
+    if (!name || !email || !password) {
+      return res.status(400).send({ error: 'All fields are required' });
+    }
+
+    const user = new User({ name, email, password });
     await user.save();
 
     try {
@@ -31,16 +36,11 @@ router.post('/register', async (req, res) => {
   }
 });
 
- 
-
 // Login
 router.post('/login', async (req, res) => {
-  console.log("Login endpoint hit");
-
   const { email, password } = req.body;
 
   try {
-    console.log(`Attempting to find user with email: ${email}`);
     const user = await User.findOne({ email });
 
     if (!user) {
@@ -66,11 +66,8 @@ router.post('/login', async (req, res) => {
   }
 });
 
-
 router.get('/me', verifyToken, async (req, res) => {
   try {
-    console.log("Token: ", req.headers.authorization); // Log the received token
-
     // Find user with _id provided in token (it's available in req.user after verifyToken middleware)
     const user = await User.findById(req.user.userId);
     if (!user) {
@@ -80,9 +77,6 @@ router.get('/me', verifyToken, async (req, res) => {
     // Return user data excluding password
     res.json({
       name: user.name,
-      location: user.location,
-      dob: user.dob,
-      gender: user.gender,
       email: user.email,
       _id: user._id
     });
@@ -91,6 +85,5 @@ router.get('/me', verifyToken, async (req, res) => {
     res.status(500).send('Server error');
   }
 });
-
 
 module.exports = router;
