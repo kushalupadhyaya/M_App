@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, StyleSheet, View, Image } from 'react-native';
-import { Card, Text, Button } from 'react-native-elements';
+import { ScrollView, StyleSheet, View, Image, TouchableOpacity } from 'react-native';
+import { Card, Text } from 'react-native-elements';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useNavigation } from '@react-navigation/native';
 
-const FreeSelectionScreen = ({ navigation }) => {
+const FreeSelectionScreen = () => {
+  const navigation = useNavigation();
   const [meditations, setMeditations] = useState([]);
-    
+
   useEffect(() => {
     fetch('http://192.168.0.4:3000/api/soundtracks')
       .then(response => {
@@ -16,8 +18,7 @@ const FreeSelectionScreen = ({ navigation }) => {
         return response.json();
       })
       .then(data => {
-        //console.log('Data:', data);
-        if(!Array.isArray(data)) {
+        if (!Array.isArray(data)) {
           data = [data];
         }
         const freeMeditations = data.filter(meditation => meditation.free === true);
@@ -27,34 +28,23 @@ const FreeSelectionScreen = ({ navigation }) => {
   }, []);
 
   return (
-    <LinearGradient 
-      colors={['white', '#e1e7ed']} 
-      style={styles.container}
-    >
-      <ScrollView contentContainerStyle={{ paddingBottom: 50 }}>
-        <Text h2 style={styles.title}>Free Selection</Text>
-        {meditations.map((meditation, index) => {
-          return (
-            <Card key={index} containerStyle={styles.card}>
-              <View style={styles.cardHeader}>
-                <Image
-                  style={styles.cardImage}
-                  source={{ uri: meditation.imageUrl }}
-                />
-                <View style={styles.cardDetails}>
-                  <Text style={styles.cardTitle}>{meditation.name}</Text>
-                  <Text style={styles.cardDescription}>{meditation.brief_description}</Text>
-                </View>
-              </View>
-              <Button
-                title="Listen"
-                buttonStyle={styles.button}
-                titleStyle={styles.buttonTitle}
-                onPress={() => navigation.navigate('FreeScreen', { meditation })}
-              />
-            </Card>
-          )
-        })}
+    <LinearGradient colors={['white', '#e1e7ed']} style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <Text style={styles.title}>Free Selection</Text>
+        {meditations.map((meditation, index) => (
+          <TouchableOpacity
+            key={index}
+            style={styles.card}
+            onPress={() => navigation.navigate('FreeScreen', { meditation })}
+          >
+            <Image style={styles.cardImage} source={{ uri: meditation.imageUrl }} />
+            <View style={styles.cardContent}>
+              <Text style={styles.cardTitle}>{meditation.name}</Text>
+              {/* <Text style={styles.cardDescription}>{meditation.brief_description}</Text> */}
+              <Text style={styles.cardDuration}>Duration: {meditation.duration} minutes</Text>
+            </View>
+          </TouchableOpacity>
+        ))}
       </ScrollView>
     </LinearGradient>
   );
@@ -64,67 +54,55 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  scrollContainer: {
+    marginTop: '0%',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    padding: 0,
+    zIndex: 1,
+  },
   title: {
-    textAlign: 'center',
-    marginTop: 80,
-    marginBottom: 20,
-    fontSize: 20,
+    fontSize: 26,
     fontWeight: 'bold',
-    color: '#0a425c',
+    marginVertical: 10,
+    paddingTop: 40,
+    textAlign: 'center',
+    color: '#0e536e',
   },
   card: {
-    marginBottom: 20,
     borderRadius: 10,
-    borderWidth: 1,
-    borderColor: '#DDD',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.22,
-    shadowRadius: 2.22,
-    elevation: 3,
-  },
-  cardHeader: {
-    flexDirection: 'row',
+    width: 300,
+    backgroundColor: 'rgba(200, 236, 250, 0.2)',
     alignItems: 'center',
-    marginBottom: 10,
+    marginTop: 15,
+    marginBottom: 20,
+    marginHorizontal: 10,
+  },
+  cardContent: {
+    padding: 10,
+    alignItems: 'center',
   },
   cardImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    marginRight: 20,
-    borderWidth: 1,
-    borderColor: '#DDD',
-  },
-  cardDetails: {
-    flex: 1,
+    width: '100%',
+    height: 200,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
   },
   cardTitle: {
-    fontSize: 20,
+    fontSize: 16,
+    color: 'rgba(14, 83, 110, 0.6)',
     fontWeight: 'bold',
-    color: '#333',
   },
   cardDescription: {
     fontSize: 14,
-    color: '#333',
+    marginTop: 10,
+    color: 'rgba(134, 173, 189, 0.8)',
   },
-  button: {
-    paddingVertical: 12,
-    borderRadius: 50,
-    backgroundColor: 'rgba(176, 203, 214, 0.8)',
-    alignItems: 'center',
-    marginTop: 15,
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  buttonTitle: {
-    fontWeight: 'bold',
+  cardDuration: {
+    fontSize: 12,
+    color: 'rgba(134, 173, 189, 0.8)',
+    marginTop: 10,
+
   },
 });
 

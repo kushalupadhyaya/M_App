@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import Slider from '@react-native-community/slider';
 import { loadAudio, unloadAudio, getAudioStatus, pauseSound, playSound, setAudioPosition, resumeSound } from '../components/audioState';
+import { htmlToText } from 'html-to-text';
+
 
 function formatTime(millis = 0) {
   const totalSeconds = Math.floor(millis / 1000);
@@ -20,7 +22,7 @@ export default function FreeScreen({ route, navigation }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
   const [position, setPosition] = useState(0)
-  
+  const [isLoading, setIsLoading] = useState(true);  // New loading state
 
   async function handlePlayPause() {
     const status = await getAudioStatus();
@@ -44,6 +46,7 @@ export default function FreeScreen({ route, navigation }) {
       await unloadAudio();
       if (meditation.url) {
         await loadAudio(meditation.url);
+        setIsLoading(false); // Set loading state to false after loading audio
         interval = setInterval(async () => {
           const status = await getAudioStatus();
           setIsPlaying(status.isPlaying);
@@ -61,9 +64,6 @@ export default function FreeScreen({ route, navigation }) {
     };
   }, [meditation.url]);
   
-  
-
-
   return (
     <View style={styles.container}>
       <Image 
@@ -83,22 +83,27 @@ export default function FreeScreen({ route, navigation }) {
           maximumTrackTintColor="#000000"
         />
         <View style={styles.timerContainer}>
-          <Text>{formatTime(position)}</Text>
-          <Text>{formatTime(duration)}</Text>
+          <Text style ={styles.timeText}>{formatTime(position)}</Text>
+          <Text style ={styles.timeText}>{formatTime(duration)}</Text>
         </View>
         <TouchableOpacity style={styles.playButton} onPress={handlePlayPause}>
-          <MaterialIcons 
-            name={isPlaying ? "pause" : "play-arrow"} 
-            size={44} 
-            color="white" 
-          />
+          {
+            isLoading
+            ? <ActivityIndicator size="large" color="white" />
+            : <MaterialIcons 
+                name={isPlaying ? "pause" : "play-arrow"} 
+                size={44} 
+                color="white" 
+              />
+          }
         </TouchableOpacity>
       </View>
-
-      <Text style={styles.description}>{meditation.brief_description}</Text>
+      <Text style={styles.disclaimer}>Disclaimer: Do not listen when driving or using any machinery. Best used with headphones where you won't be disturbed </Text>
+      <Text style={styles.description}>{htmlToText(meditation.description)}</Text>
     </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {
@@ -116,14 +121,32 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginVertical: 10,
     textAlign: 'center',
-    color: '#344955',  // Used a muted and calming color for the title
+    color: 'rgba(14, 83, 110, 0.6)',  // Used a muted and calming color for the title
+  },
+  disclaimer:{
+    fontSize: 10,
+    paddingHorizontal: 10,
+    textAlign: 'center',
+    color: 'rgba(130, 145, 153, 0.75)', // Darker gray-blue tone, considered soothing and calming
+    marginVertical: 10,
+
   },
   description: {
     fontSize: 16,
-    paddingHorizontal: 10,
+    paddingHorizontal: 30,
     textAlign: 'center',
-    color: '#4a6572',  // Used a muted and calming color for the description
+    color: 'rgba(130, 145, 153, 0.75)', // Darker gray-blue tone, considered soothing and calming
+    marginTop: 0,
+    lineHeight: 24, // Added some line height to give the text some breathing room
+    padding: 15, // Added padding to give text more space
+    borderRadius: 10, // Added slightly rounded corners for a softer look
+    shadowColor: '#edf1f2', // Optional shadow for a sense of depth
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+    elevation: 2
   },
+  
   playerContainer: {
     width: '100%',
     alignItems: 'center',
@@ -147,5 +170,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '80%',
+  },
+  timeText: {
+    color: 'rgba(130, 145, 153,0.8)'
   },
 });

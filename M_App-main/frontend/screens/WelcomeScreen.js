@@ -30,7 +30,7 @@ export default function WelcomeScreen({ navigation }) {
             <Text style={styles.buttonText}>Login</Text>
           </TouchableOpacity>
           <TouchableOpacity style={[styles.button, styles.signupButton]} onPress={() => navigation.navigate('Registration')}>
-            <Text style={styles.buttonText}>Sign Up</Text>
+            <Text style={styles.buttonText}>Register</Text>
           </TouchableOpacity>
           <TouchableOpacity style={[styles.button, styles.freeSelectionButton]} onPress={() => navigation.navigate('FreeSelection')}>
             <Text style={styles.buttonText}>Preview Access</Text>

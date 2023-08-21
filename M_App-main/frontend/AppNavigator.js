@@ -3,6 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useAuth } from './AuthContext';
 
+import MyTabs from './screens/MyTabs'; 
 import WelcomeScreen from './screens/WelcomeScreen';
 import RegistrationScreen from './screens/RegistrationScreen';
 import SignInScreen from './screens/SignInScreen';
@@ -17,6 +18,9 @@ import FreeSelectionScreen from './screens/FreeSelectionScreen';
 import MainPageScreen from './screens/MainPageScreen';
 import SubscriptionScreen from './screens/SubscriptionScreen';
 import FreeScreen from './screens/FreeScreen';
+import SettingsScreen from './screens/SettingsScreen';
+
+
 
 const AuthStack = createNativeStackNavigator();
 const AppStack = createNativeStackNavigator();
@@ -28,7 +32,7 @@ const AppNavigator = () => {
     <NavigationContainer>
       {isAuthenticated ? (
         <AppStack.Navigator initialRouteName="Main">
-          <AppStack.Screen name="Main" component={MainPageScreen} />
+          <AppStack.Screen name="Main" component={MyTabs} options={{ headerShown: false }}/>
           <AppStack.Screen name="MentalHealth" component={MentalHealthScreen} />
           <AppStack.Screen name="Spiritual" component={SpiritualScreen} />
           <AppStack.Screen name="Love" component={LoveScreen} />
@@ -38,6 +42,8 @@ const AppNavigator = () => {
           <AppStack.Screen name="FitnessAndSport" component={FitnessAndSportScreen} />
           <AppStack.Screen name="Subscription" component={SubscriptionScreen} />
           <AppStack.Screen name="FreeSelection" component={FreeSelectionScreen} />
+          <AppStack.Screen name="Settings" component={SettingsScreen} />
+
         </AppStack.Navigator>
       ) : (
         <AuthStack.Navigator initialRouteName="Welcome">

@@ -20,6 +20,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     await SecureStore.deleteItemAsync('userToken');
+    await SecureStore.deleteItemAsync('userData');
     setUser(null);
     setIsAuthenticated(false);
   };
@@ -28,32 +29,31 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
-const bootstrapAsync = async () => {
+  const bootstrapAsync = async () => {
     let userToken;
+    let userData;
 
     try {
       userToken = await SecureStore.getItemAsync('userToken');
+      userData = await SecureStore.getItemAsync('userData');
+      if (userData) {
+        userData = JSON.parse(userData); // Parse string to JSON
+      }
     } catch (e) {
       console.error(e);
     }
 
+    setUser(userData); // Set user data from SecureStore
     setIsAuthenticated(userToken != null);
     setIsLoading(false);
-
-    if (userToken) {
-      axios
-        .get('http://192.168.0.4:3000/api/auth/me', {
-          headers: { Authorization: `Bearer ${userToken}` },
-        })
-        .then((response) => {
-          setUser(response.data);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
   };
 
+  // Store user data in SecureStore whenever user state changes
+  useEffect(() => {
+    if (user) {
+      SecureStore.setItemAsync('userData', JSON.stringify(user));
+    }
+  }, [user]);
 
   useEffect(() => {
     bootstrapAsync();
@@ -69,6 +69,7 @@ const bootstrapAsync = async () => {
     </AuthContext.Provider>
   );
 };
+
 
 export const useAuth = () => {
   return useContext(AuthContext);
