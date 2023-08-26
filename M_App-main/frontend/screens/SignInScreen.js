@@ -15,7 +15,7 @@ export default function SignInScreen() {
 
   const loginUser = () => {
     axios
-    .post('http://192.168.0.4:3000/api/auth/login', { email: email.toLowerCase(), password: password })
+    .post('http://192.168.0.14:3000/api/auth/login', { email: email.toLowerCase(), password: password })
     .then(function (response) {
         console.log(response.data);
         SecureStore.setItemAsync('userToken', response.data.token);

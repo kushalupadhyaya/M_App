@@ -49,30 +49,39 @@ const CarouselComponent = ({ items }) => {
 const HomeScreen = () => {
   const { user, logout } = useAuth();
   const navigation = useNavigation();
-
   const [userData, setUserData] = useState(null);
 
   useEffect(() => {
     if (user) {
-      fetch('http://192.168.0.4:3000/api/auth/me', {
+      // Log the token to the console
+      console.log("Token: ", user.token);
+  
+      fetch('http://192.168.0.14:3000/api/auth/me', {
         headers: {
           Authorization: `Bearer ${user.token}`,
         },
       })
         .then(response => {
+          // Log the response status to the console
+          console.log("Response Status: ", response.status);
+  
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
           }
           return response.json();
         })
         .then(data => {
+          // Log the fetched user data to the console
+          console.log("Fetched User Data: ", data);
           setUserData(data);
         })
         .catch(err => {
+          // Log the error to the console
           console.error('Error fetching user data:', err);
         });
     }
   }, [user]);
+  
 
   const buttonNames = ['Sleep', 'Anxiety', 'Happiness', 'Career', 'Love', 'Healing', 'Confidence','Motivation', 'Spiritual'];
 
@@ -110,12 +119,11 @@ const HomeScreen = () => {
       imageUri: "https://images.pexels.com/photos/583437/pexels-photo-583437.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
       duration: 15
     },
-    // Add more items...
   ];
 
   return (
     <View style={styles.container}>
-      <View style={styles.videoContainer}>
+      {/* <View style={styles.videoContainer}>
         <Video
           source={{ uri: 'https://res.cloudinary.com/djmeitgwd/video/upload/v1689604466/backgroundVideo_nfghph.mp4' }}
           style={StyleSheet.absoluteFill}
@@ -129,20 +137,17 @@ const HomeScreen = () => {
           colors={['rgba(255, 255, 255, 0.6)', 'transparent']}
           style={StyleSheet.absoluteFill}
         />
-      </View>
+      </View> */}
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        
         {user && userData && (
           <>
             <Text style={styles.title}>Hi {userData.name}!</Text>
-
             <CardComponent
               title="Morning Meditation for Today"
               description="A New Meditation Every Morning"
               imageUri="https://images.pexels.com/photos/1450353/pexels-photo-1450353.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
               duration={12}
             />
-
             {buttonNames.map((name, index) => 
               index % 3 === 0 ?
                 <View style={styles.buttonRow} key={`row_${index}`}>
@@ -155,29 +160,21 @@ const HomeScreen = () => {
               :
                 null
             )}
-
             <TouchableOpacity style={styles.buttonSurprise} onPress={() => navigation.navigate('Recommendations')}>
               <Text style={styles.buttonText}>Surprise Me!</Text>
             </TouchableOpacity>
-
             <Text style={styles.title1}>Popular</Text>
-
             <CarouselComponent items={carouselItems} />
-
-
             <TouchableOpacity style={styles.surpriseButton} onPress={() => navigation.navigate('QuickStartSession')}>
               <Text style={styles.surpriseButtonText}>Surprise Me!</Text>
             </TouchableOpacity>
-
             <View style={styles.favouritesHeader}>
               <Text style={styles.title1}>Favourites</Text>
               <TouchableOpacity onPress={() => navigation.navigate('Favourites')}>
                 <Text style={styles.seeAllText}>See All</Text>
               </TouchableOpacity>
             </View>
-
             <CarouselComponent items={favouritesItems} />
-
           </>
         )}
       </ScrollView>
@@ -187,14 +184,14 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    zIndex: 1,
+    zIndex: 5,
   },
-  videoContainer: {
-    height: '35%',
-    zIndex: 1,
-    borderRadius: 150,
-    position: 'relative',
-  },
+  // videoContainer: {
+  //   height: '35%',
+  //   zIndex: 1,
+  //   borderRadius: 150,
+  //   position: 'relative',
+  // },
   scrollContainer: {
     marginTop: '0%',
     alignItems: 'center',

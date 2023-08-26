@@ -41,7 +41,7 @@ const RegistrationScreen = () => {
     }
 
     axios
-      .post('http://192.168.0.4:3000/api/auth/register', {
+      .post('http://192.168.0.14:3000/api/auth/register', {
         name: fullName,
         email: email.trim().toLowerCase(),
         password: password,

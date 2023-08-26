@@ -9,7 +9,7 @@ const FreeSelectionScreen = () => {
   const [meditations, setMeditations] = useState([]);
 
   useEffect(() => {
-    fetch('http://192.168.0.4:3000/api/soundtracks')
+    fetch('http://192.168.0.14:3000/api/soundtracks')
       .then(response => {
         if (!response.ok) {
           console.error('Response status:', response.status);
@@ -31,6 +31,8 @@ const FreeSelectionScreen = () => {
     <LinearGradient colors={['white', '#e1e7ed']} style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <Text style={styles.title}>Free Selection</Text>
+        <Text style={styles.subtitle}>Free to use forever. No Sign Up required.</Text>
+
         {meditations.map((meditation, index) => (
           <TouchableOpacity
             key={index}
@@ -68,6 +70,10 @@ const styles = StyleSheet.create({
     paddingTop: 40,
     textAlign: 'center',
     color: '#0e536e',
+  },
+  subtitle:{
+   fontSize: 14,
+   fontWeight: 300 
   },
   card: {
     borderRadius: 10,

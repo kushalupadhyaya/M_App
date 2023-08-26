@@ -20,8 +20,6 @@ import SubscriptionScreen from './screens/SubscriptionScreen';
 import FreeScreen from './screens/FreeScreen';
 import SettingsScreen from './screens/SettingsScreen';
 
-
-
 const AuthStack = createNativeStackNavigator();
 const AppStack = createNativeStackNavigator();
 

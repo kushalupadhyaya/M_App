@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, Image } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Video } from 'expo-av';
 
@@ -21,9 +21,9 @@ export default function WelcomeScreen({ navigation }) {
         style={styles.linearGradient}
       >
         <View style={styles.content}>
-          <Text style={styles.title}>WELCOME TO</Text>
-          <Text style={styles.title1}>PEACEPORT</Text>
-          <Text style={styles.subtitle}>Start your journey to mental focus and inner tranquility</Text>
+        <Image source={require('../assets/peaceportLight.png')} style={styles.logo} />
+
+          <Text style={styles.subtitle}>Your journey to peak performance and inner tranquility</Text>
         </View>
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={[styles.button, styles.loginButton]} onPress={() => navigation.navigate('SignIn')}>
@@ -33,7 +33,7 @@ export default function WelcomeScreen({ navigation }) {
             <Text style={styles.buttonText}>Register</Text>
           </TouchableOpacity>
           <TouchableOpacity style={[styles.button, styles.freeSelectionButton]} onPress={() => navigation.navigate('FreeSelection')}>
-            <Text style={styles.buttonText}>Preview Access</Text>
+            <Text style={styles.buttonText}>Risk Free Access</Text>
           </TouchableOpacity>
         </View>
       </LinearGradient>
@@ -55,22 +55,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  title: {
-    fontSize: 26,
-    fontWeight: 'bold',
-    color: 'rgba(235, 255, 242, 0.8)',
-    marginBottom: 10,
-  },
-  title1: {
-    fontSize: 42,
-    color: 'white',
+  logo: {
+    width: 200,
+    height: 130,
   },
   subtitle: {
     fontSize: 15,
     color: 'rgba(255, 255, 255, 1)',
     marginTop: 10,
     textAlign: "center",
+    fontWeight: '300',  
   },
+  
   buttonContainer: {
     padding: 20,
   },
@@ -87,7 +83,6 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.23,
     shadowRadius: 2.62,
- 
   },
   loginButton: {
     backgroundColor: 'rgba(220, 237, 242, 0.25)',
@@ -101,6 +96,5 @@ const styles = StyleSheet.create({
   buttonText: {
     color: 'white',
     fontSize: 14,
-    // fontWeight: 'bold',
   },
 });

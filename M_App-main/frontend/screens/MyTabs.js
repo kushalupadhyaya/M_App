@@ -15,11 +15,10 @@ function MyTabs() {
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
-
           if (route.name === 'Home') {
             iconName = focused ? 'home' : 'home-outline';
           } else if (route.name === 'Subscription') {
-            iconName = focused ? 'subscriptions' : 'subscriptions-outline';
+            iconName = focused ? 'newspaper' : 'newspaper-outline';  // Changed to available Ionicons
           } else if (route.name === 'Settings') {
             iconName = focused ? 'settings' : 'settings-outline';
           } else if (route.name === 'Progress') {
@@ -30,12 +29,16 @@ function MyTabs() {
 
           return <Icon name={iconName} size={size} color={color} />;
         },
+        tabBarActiveTintColor: "#89cff0",
+        tabBarInactiveTintColor: "gray",
+        tabBarStyle: [
+          {
+            display: "flex"
+          },
+          null
+        ],
         headerShown: false,
       })}
-      tabBarOptions={{
-        activeTintColor: '#89cff0',
-        inactiveTintColor: 'gray',
-      }}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Subscription" component={SubscriptionScreen} />
