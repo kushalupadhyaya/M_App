@@ -7,6 +7,35 @@ const User = require('../models/User');
 const router = express.Router();
 const verifyToken = require('../middleware');
 
+//validate session middleware
+
+function validateSession(req, res, next) {
+  const token = req.headers.authorization;
+  if (!token) {
+    return res.status(401).send('No token provided');
+  }
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+    if (err) {
+      return res.status(401).send('Invalid token');
+    }
+
+    User.findById(decoded.userId, (err, user) => {
+      if (err || !user) {
+        return res.status(401).send('User not found');
+      }
+
+      if (user.currentSessionToken !== token) {
+        return res.status(401).send('Token does not match active session');
+      }
+
+      req.user = user;  // Store user info in the request object
+      next();
+    });
+  });
+}
+
+
 // Register
 router.post('/register', async (req, res) => {
   try {
@@ -37,6 +66,7 @@ router.post('/register', async (req, res) => {
 });
 
 // Login
+// Login
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
@@ -52,11 +82,19 @@ router.post('/login', async (req, res) => {
     if (isMatch) {
       const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
 
-      // Don't include password in the response
-      const userResponse = user.toObject();
-      delete userResponse.password;
+      // Update the user's currentSessionToken in the database
+      try {
+        const updatedUser = await User.findByIdAndUpdate(user._id, { currentSessionToken: token }, { new: true });
+        
+        // Don't include password in the response
+        const userResponse = updatedUser.toObject();
+        delete userResponse.password;
 
-      res.send({ token, user: userResponse });
+        res.send({ token, user: userResponse });
+      } catch (err) {
+        console.error("Error updating user's session token:", err);
+        return res.status(500).send({ error: 'Error updating session token' });
+      }
     } else {
       return res.status(400).send({ error: 'Invalid password' });
     }
@@ -66,7 +104,8 @@ router.post('/login', async (req, res) => {
   }
 });
 
-router.get('/me', verifyToken, async (req, res) => {
+
+router.get('/me', verifyToken, validateSession, async (req, res) => {
   try {
     // Find user with _id provided in token (it's available in req.user after verifyToken middleware)
     const user = await User.findById(req.user.userId);
